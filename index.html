@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Waiterbot Kitchen Dashboard</title>
 </head>
 <body>
     <div class="container mt-3">
@@ -33,7 +33,7 @@
     const firebaseConfig = {
         apiKey: "AIzaSyA6Fnu2c0eiszLQ3gbRm62j-SV3ETBxSmY",
         authDomain: "wbot-7488c.firebaseapp.com",
-        databaseURL: "https://wbot-7488c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        databaseURL: "https://wbot-7488c-default-rtdb.asia-southeast1.firebasedatabase.app", // Ensure this URL is correct
         projectId: "wbot-7488c",
         storageBucket: "wbot-7488c.appspot.com",
         messagingSenderId: "699872450961",
@@ -56,7 +56,6 @@
         let td3 = document.createElement("td");
         let td4 = document.createElement("td");
         let td5 = document.createElement("td");
-        
 
         let adding_cap_for_dish = dish.charAt(0).toUpperCase() + dish.slice(1);
 
@@ -125,16 +124,17 @@
         // Update the status in the Firebase Realtime Database to "finished"
         const itemRef = ref(db, `tables_and_items/${tableNo}/Ordered_Item/${itemIndex}`);
 
-        // The correct way is to pass an object
         update(itemRef, { 2: "finished" }).then(() => {
             // Change the button text to "Finished"
             button.innerHTML = "Finished";
             button.className = "btn btn-secondary"; // Change button color to indicate it's been finished
             button.disabled = true; // Disable the button after ticking
 
-            // Move the row to the bottom of the table
-            tbody.removeChild(row); // Remove the row from its current position
-            tbody.appendChild(row); // Re-append it, which moves it to the bottom
+            // Check if the row is still in the DOM before trying to remove it
+            if (row && row.parentNode) {
+                row.parentNode.removeChild(row); // Remove the row from its current position
+                tbody.appendChild(row); // Re-append it, which moves it to the bottom
+            }
         }).catch((error) => {
             console.error("Error updating status: ", error);
         });

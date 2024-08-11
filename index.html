@@ -121,33 +121,23 @@
     }
 
     function markRowAsCompleted(tableNo, itemIndex, button, row) {
-    // Update the status in the Firebase Realtime Database to "finished"
-    const itemRef = ref(db, `tables_and_items/${tableNo}/Ordered_Item/${itemIndex}`);
+        // Update the status in the Firebase Realtime Database to "finished"
+        const itemRef = ref(db, `tables_and_items/${tableNo}/Ordered_Item/${itemIndex}`);
 
-    update(itemRef, { 2: "finished" }).then(() => {
-        // Change the button text to "Finished"
-        button.innerHTML = "Finished";
-        button.className = "btn btn-secondary"; // Change button color to indicate it's been finished
-        button.disabled = true; // Disable the button after ticking
+        update(itemRef, { 2: "finished" }).then(() => {
+            // Change the button text to "Finished"
+            button.innerHTML = "Finished";
+            button.className = "btn btn-secondary"; // Change button color to indicate it's been finished
+            button.disabled = true; // Disable the button after ticking
 
-        // Send HTTP request to ESP8266 to activate the light
-        fetch("http://<ESP8266_IP_ADDRESS>/activate-light")
-            .then(response => response.text())
-            .then(data => {
-                console.log("ESP8266 Response:", data);
-            })
-            .catch(error => {
-                console.error("Error communicating with ESP8266:", error);
-            });
-
-        // Move the row to the bottom of the table
-        if (row && row.parentNode) {
-            row.parentNode.removeChild(row); // Remove the row from its current position
-            tbody.appendChild(row); // Re-append it, which moves it to the bottom
-        }
-    }).catch((error) => {
-        console.error("Error updating status: ", error);
-    });
+            // Check if the row is still in the DOM before trying to remove it
+            if (row && row.parentNode) {
+                row.parentNode.removeChild(row); // Remove the row from its current position
+                tbody.appendChild(row); // Re-append it, which moves it to the bottom
+            }
+        }).catch((error) => {
+            console.error("Error updating status: ", error);
+        });
     }
 
     window.onload = GetAllDataRealTime;

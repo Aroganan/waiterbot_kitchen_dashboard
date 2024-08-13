@@ -92,7 +92,7 @@
     }
 
     function GetAllDataRealTime() {
-        const dbRef = ref(db, 'tables_and_items'); // Reference to the "tables_and_items" node
+        const dbRef = ref(db, '/'); // Reference to the "tables_and_items" node
 
         onValue(dbRef, (snapshot) => {
             tbody.innerHTML = ""; // Clear the table body before adding new rows
